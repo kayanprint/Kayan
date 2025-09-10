@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  
+  <!-- Kayan Store Template - مكتبة ومطبعة كيان -->
+  <meta name="description" content="مكتبة ومطبعة كيان لخدمات الطباعة المتكاملة - متجر إلكتروني متكامل"/>
+  <meta name="keywords" content="طباعة, مكتبة, كيان, متجر إلكتروني"/>
+  
+  <!-- AdSense Auto Ads -->
+  <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-XXXXXXXXXX", // ضع رقم AdSense هنا
+      enable_page_level_ads: true
+    });
+  </script>
+
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&amp;display=swap' rel='stylesheet'/>
+  
+  <!-- Integrated CSS and JavaScript -->
+  <b:include data='blog' name='all-head-content'/>
+</head>
+
+<body>
+  <!-- القالب المتكامل مع جميع الميزات -->
+  <!-- يتم تحميل المحتوى من الملفات المنفصلة -->
+  
+  <script>
+    // تحميل نظام عربة التسوق
+    document.addEventListener('DOMContentLoaded', function() {
+      // تحميل CSS
+      const cssFiles = [
+        'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap'
+      ];
+      
+      cssFiles.forEach(function(href) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        document.head.appendChild(link);
+      });
+      
+      // تحميل JavaScript
+      const jsFiles = [
+        '/js/cart-system.js',
+        '/js/payment-shipping-system.js'
+      ];
+      
+      jsFiles.forEach(function(src) {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        document.head.appendChild(script);
+      });
+    });
+  </script>
+  
+  <!-- تضمين محتوى القالب الأساسي -->
+  <div id="template-content">
+    <!-- سيتم تحميل المحتوى من kayan-template-basic.xml -->
+  </div>
+  
+  <!-- AdSense Script -->
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</body>
+</html>
