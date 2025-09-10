@@ -7,7 +7,7 @@
   <title><data:blog.pageTitle/></title>
   <b:include data='blog' name='all-head-content'/>
   
-  <!-- Kayan Store Template - مكتبة ومطبعة كيان -->
+  <!-- Kayan Store Template -->
   <meta name="description" content="مكتبة ومطبعة كيان لخدمات الطباعة المتكاملة - متجر إلكتروني متكامل"/>
   <meta name="keywords" content="طباعة, مكتبة, كيان, متجر إلكتروني"/>
   
@@ -28,8 +28,8 @@
 </head>
 
 <body>
-  <!-- القالب المتكامل مع جميع الميزات -->
-  <!-- يتم تحميل المحتوى من الملفات المنفصلة -->
+  <!-- Integrated template with all features -->
+  <!-- Content loaded from separate files -->
   
   <script>
     // تحميل نظام عربة التسوق
@@ -61,9 +61,9 @@
     });
   </script>
   
-  <!-- تضمين محتوى القالب الأساسي -->
+  <!-- Include basic template content -->
   <div id="template-content">
-    <!-- سيتم تحميل المحتوى من kayan-template-basic.xml -->
+    <!-- Content will be loaded from kayan-template-basic.xml -->
   </div>
   
   <!-- AdSense Script -->

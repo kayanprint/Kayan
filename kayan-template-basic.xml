@@ -11,9 +11,9 @@
   <title><data:blog.pageTitle/></title>
   <b:include data='blog' name='all-head-content'/>
   
-  <!-- Kayan Store Template - مكتبة ومطبعة كيان -->
-  <meta name="description" content="مكتبة ومطبعة كيان لخدمات الطباعة المتكاملة - متجر إلكتروني متكامل"/>
-  <meta name="keywords" content="طباعة, مكتبة, كيان, متجر إلكتروني"/>
+  <!-- Kayan Store Template -->
+  <meta name="description" content="Kayan Library and Press - Complete Printing Services - Integrated E-commerce Store"/>
+  <meta name="keywords" content="printing, library, kayan, ecommerce, egypt"/>
   
   <!-- AdSense Auto Ads -->
   <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
@@ -25,7 +25,7 @@
   </script>
 
   <style>
-    /* CSS الأساسي للقالب */
+    /* Basic CSS for template */
     * {
       margin: 0;
       padding: 0;
@@ -603,7 +603,7 @@
                       <div class='product-price'>
                         <script>
                           //<![CDATA[
-                          // استخراج السعر من المحتوى
+                          // Extract price from content
                           var content = '<data:post.body/>';
                           var priceMatch = content.match(/(\d+)\s*جنيه/);
                           var price = priceMatch ? priceMatch[1] : '0';
