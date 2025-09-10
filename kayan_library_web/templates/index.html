@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}الصفحة الرئيسية - مكتبة ومطبعة كيان{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-gradient text-white text-center p-5 rounded mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h1 class="display-4">
+                <i class="fas fa-book-open"></i>
+                مرحباً بك في مكتبة ومطبعة كيان
+            </h1>
+            <p class="lead">نظام إدارة متكامل لإدارة المكتبات والمطابع</p>
+            <hr class="my-4">
+            <p>إدارة شاملة للمنتجات، العملاء، الموردين، والفواتير</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- بطاقة المنتجات -->
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-box fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">إدارة المنتجات</h5>
+                <p class="card-text">إضافة وتعديل المنتجات وإدارة المخزون</p>
+                <a href="{{ url_for('products') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> إدارة المنتجات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بطاقة العملاء -->
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-users fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">إدارة العملاء</h5>
+                <p class="card-text">إضافة وتعديل بيانات العملاء</p>
+                <a href="{{ url_for('customers') }}" class="btn btn-success">
+                    <i class="fas fa-arrow-left"></i> إدارة العملاء
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بطاقة الموردين -->
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-truck fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">إدارة الموردين</h5>
+                <p class="card-text">إضافة وتعديل بيانات الموردين</p>
+                <a href="{{ url_for('suppliers') }}" class="btn btn-warning">
+                    <i class="fas fa-arrow-left"></i> إدارة الموردين
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بطاقة الفواتير -->
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-file-invoice fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">إدارة الفواتير</h5>
+                <p class="card-text">إنشاء وعرض الفواتير</p>
+                <a href="{{ url_for('invoices') }}" class="btn btn-info">
+                    <i class="fas fa-arrow-left"></i> إدارة الفواتير
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- إجراءات سريعة -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt"></i>
+                    إجراءات سريعة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('new_invoice') }}" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-plus"></i>
+                            إنشاء فاتورة جديدة
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-plus"></i>
+                            إضافة منتج جديد
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('customers') }}" class="btn btn-info btn-lg w-100">
+                            <i class="fas fa-user-plus"></i>
+                            إضافة عميل جديد
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{{ url_for('reports') }}" class="btn btn-warning btn-lg w-100">
+                            <i class="fas fa-chart-line"></i>
+                            عرض التقارير
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- معلومات النظام -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    معلومات النظام
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        إدارة شاملة للمخزون
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        نظام فواتير متكامل
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        تقارير مفصلة
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        واجهة سهلة الاستخدام
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        دعم كامل للغة العربية
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات سريعة -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-tachometer-alt"></i>
+                    لوحة المعلومات
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-box fa-2x text-primary mb-2"></i>
+                            <h4 class="text-primary">المنتجات</h4>
+                            <p class="text-muted">إجمالي المنتجات المسجلة</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-users fa-2x text-success mb-2"></i>
+                            <h4 class="text-success">العملاء</h4>
+                            <p class="text-muted">إجمالي العملاء المسجلين</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-file-invoice fa-2x text-info mb-2"></i>
+                            <h4 class="text-info">الفواتير</h4>
+                            <p class="text-muted">إجمالي الفواتير المنشأة</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-dollar-sign fa-2x text-warning mb-2"></i>
+                            <h4 class="text-warning">المبيعات</h4>
+                            <p class="text-muted">إجمالي قيمة المبيعات</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

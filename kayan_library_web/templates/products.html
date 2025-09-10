@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة المنتجات - مكتبة ومطبعة كيان{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-box"></i>
+        إدارة المنتجات
+    </h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        <i class="fas fa-plus"></i>
+        إضافة منتج جديد
+    </button>
+</div>
+
+<!-- جدول المنتجات -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>رقم المنتج</th>
+                        <th>اسم المنتج</th>
+                        <th>الفئة</th>
+                        <th>سعر الشراء</th>
+                        <th>سعر البيع</th>
+                        <th>الكمية المتاحة</th>
+                        <th>المورد</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.ProductID }}</td>
+                        <td>{{ product.ProductName }}</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ product.Category }}</span>
+                        </td>
+                        <td>{{ "%.2f"|format(product.PurchasePrice) }} ريال</td>
+                        <td>{{ "%.2f"|format(product.SalePrice) }} ريال</td>
+                        <td>
+                            {% if product.StockQty <= 5 %}
+                                <span class="badge bg-danger">{{ product.StockQty }}</span>
+                            {% elif product.StockQty <= 10 %}
+                                <span class="badge bg-warning">{{ product.StockQty }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ product.StockQty }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.SupplierName or 'غير محدد' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editProduct({{ product.ProductID }})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct({{ product.ProductID }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">لا توجد منتجات مسجلة</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- نموذج إضافة منتج -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">إضافة منتج جديد</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_product') }}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">اسم المنتج *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">الفئة *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">اختر الفئة</option>
+                                <option value="أدوات مكتبية">أدوات مكتبية</option>
+                                <option value="كتب">كتب</option>
+                                <option value="خدمات طباعة">خدمات طباعة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="purchase_price" class="form-label">سعر الشراء (ريال)</label>
+                            <input type="number" class="form-control" id="purchase_price" name="purchase_price" step="0.01" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sale_price" class="form-label">سعر البيع (ريال) *</label>
+                            <input type="number" class="form-control" id="sale_price" name="sale_price" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="stock_qty" class="form-label">الكمية الأولية</label>
+                            <input type="number" class="form-control" id="stock_qty" name="stock_qty" min="0" value="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="supplier_id" class="form-label">المورد</label>
+                            <select class="form-select" id="supplier_id" name="supplier_id">
+                                <option value="">اختر المورد</option>
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier.SupplierID }}">{{ supplier.SupplierName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        حفظ المنتج
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات المنتجات -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-box fa-2x text-primary mb-2"></i>
+                <h4>{{ products|length }}</h4>
+                <p class="text-muted">إجمالي المنتجات</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                <h4>{{ products|selectattr('StockQty', '<=', 5)|list|length }}</h4>
+                <p class="text-muted">منتجات منخفضة المخزن</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-tags fa-2x text-success mb-2"></i>
+                <h4>{{ products|map(attribute='Category')|unique|list|length }}</h4>
+                <p class="text-muted">عدد الفئات</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-2x text-info mb-2"></i>
+                <h4>{{ "%.0f"|format(products|sum(attribute='SalePrice')) }}</h4>
+                <p class="text-muted">إجمالي قيمة المنتجات</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function editProduct(productId) {
+    // يمكن إضافة نموذج تعديل المنتج هنا
+    alert('سيتم إضافة وظيفة التعديل قريباً');
+}
+
+function deleteProduct(productId) {
+    if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+        // يمكن إضافة وظيفة الحذف هنا
+        alert('سيتم إضافة وظيفة الحذف قريباً');
+    }
+}
+</script>
+{% endblock %}
+

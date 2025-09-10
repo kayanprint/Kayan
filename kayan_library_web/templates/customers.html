@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة العملاء - مكتبة ومطبعة كيان{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-users"></i>
+        إدارة العملاء
+    </h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+        <i class="fas fa-user-plus"></i>
+        إضافة عميل جديد
+    </button>
+</div>
+
+<!-- جدول العملاء -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>رقم العميل</th>
+                        <th>اسم العميل</th>
+                        <th>رقم الهاتف</th>
+                        <th>العنوان</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.CustomerID }}</td>
+                        <td>
+                            <strong>{{ customer.CustomerName }}</strong>
+                        </td>
+                        <td>
+                            {% if customer.Phone %}
+                                <a href="tel:{{ customer.Phone }}" class="text-decoration-none">
+                                    <i class="fas fa-phone"></i> {{ customer.Phone }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">غير محدد</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ customer.Address or 'غير محدد' }}</td>
+                        <td>
+                            {% if customer.Email %}
+                                <a href="mailto:{{ customer.Email }}" class="text-decoration-none">
+                                    <i class="fas fa-envelope"></i> {{ customer.Email }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">غير محدد</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ customer.CreatedDate[:10] if customer.CreatedDate else 'غير محدد' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editCustomer({{ customer.CustomerID }})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-info" onclick="viewCustomerInvoices({{ customer.CustomerID }})">
+                                <i class="fas fa-file-invoice"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCustomer({{ customer.CustomerID }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">لا يوجد عملاء مسجلين</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- نموذج إضافة عميل -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">إضافة عميل جديد</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_customer') }}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">اسم العميل *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="05xxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">العنوان</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" placeholder="العنوان الكامل للعميل"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i>
+                        حفظ العميل
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات العملاء -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-2x text-success mb-2"></i>
+                <h4>{{ customers|length }}</h4>
+                <p class="text-muted">إجمالي العملاء</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-phone fa-2x text-info mb-2"></i>
+                <h4>{{ customers|selectattr('Phone')|list|length }}</h4>
+                <p class="text-muted">عملاء لديهم أرقام هواتف</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                <h4>{{ customers|selectattr('Email')|list|length }}</h4>
+                <p class="text-muted">عملاء لديهم بريد إلكتروني</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function editCustomer(customerId) {
+    // يمكن إضافة نموذج تعديل العميل هنا
+    alert('سيتم إضافة وظيفة التعديل قريباً');
+}
+
+function viewCustomerInvoices(customerId) {
+    // يمكن إضافة صفحة عرض فواتير العميل هنا
+    alert('سيتم إضافة وظيفة عرض فواتير العميل قريباً');
+}
+
+function deleteCustomer(customerId) {
+    if (confirm('هل أنت متأكد من حذف هذا العميل؟\nسيتم حذف جميع الفواتير المرتبطة به أيضاً.')) {
+        // يمكن إضافة وظيفة الحذف هنا
+        alert('سيتم إضافة وظيفة الحذف قريباً');
+    }
+}
+
+// التحقق من صحة رقم الهاتف السعودي
+document.getElementById('phone').addEventListener('input', function() {
+    const phone = this.value;
+    const saudiPhoneRegex = /^(05|5)[0-9]{8}$/;
+    
+    if (phone && !saudiPhoneRegex.test(phone)) {
+        this.setCustomValidity('يرجى إدخال رقم هاتف سعودي صحيح (05xxxxxxxx)');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+</script>
+{% endblock %}
+
