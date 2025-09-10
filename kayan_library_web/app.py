@@ -150,7 +150,13 @@ def update_stock(product_id, transaction_type, quantity):
 # الصفحة الرئيسية
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # الحصول على الإحصائيات
+    stats = get_dashboard_stats()
+    
+    # الحصول على المنتجات منخفضة المخزون
+    low_stock_products = get_low_stock_products()
+    
+    return render_template('index.html', stats=stats, low_stock_products=low_stock_products)
 
 # إدارة المنتجات
 @app.route('/products')
@@ -368,7 +374,85 @@ def get_product(product_id):
         })
     return jsonify({'error': 'المنتج غير موجود'}), 404
 
+def get_dashboard_stats():
+    """الحصول على إحصائيات لوحة المعلومات"""
+    conn = get_db_connection()
+    
+    stats = {}
+    
+    try:
+        # عدد المنتجات
+        stats['products'] = conn.execute('SELECT COUNT(*) as count FROM Products').fetchone()['count']
+        
+        # عدد العملاء
+        stats['customers'] = conn.execute('SELECT COUNT(*) as count FROM Customers').fetchone()['count']
+        
+        # عدد الفواتير
+        stats['invoices'] = conn.execute('SELECT COUNT(*) as count FROM Invoices').fetchone()['count']
+        
+        # إجمالي المبيعات
+        stats['sales'] = conn.execute('SELECT COALESCE(SUM(TotalAmount), 0) as total FROM Invoices').fetchone()['total']
+        
+    except Exception as e:
+        print(f"خطأ في الحصول على الإحصائيات: {e}")
+        stats = {'products': 0, 'customers': 0, 'invoices': 0, 'sales': 0}
+    
+    finally:
+        conn.close()
+    
+    return stats
+
+def get_low_stock_products():
+    """الحصول على المنتجات منخفضة المخزون"""
+    conn = get_db_connection()
+    
+    try:
+        products = conn.execute('''
+            SELECT ProductName as name, StockQty as stock, 5 as min_stock
+            FROM Products 
+            WHERE StockQty <= 5
+            ORDER BY StockQty ASC
+            LIMIT 10
+        ''').fetchall()
+        
+        return [dict(product) for product in products]
+        
+    except Exception as e:
+        print(f"خطأ في الحصول على المنتجات منخفضة المخزون: {e}")
+        return []
+    
+    finally:
+        conn.close()
+
+# إضافة route للحصول على الإحصائيات عبر AJAX
+@app.route('/api/stats')
+def api_stats():
+    """API للحصول على الإحصائيات"""
+    stats = get_dashboard_stats()
+    return jsonify(stats)
+
+# إضافة route للحصول على المنتجات منخفضة المخزون
+@app.route('/api/low-stock')
+def api_low_stock():
+    """API للحصول على المنتجات منخفضة المخزون"""
+    products = get_low_stock_products()
+    return jsonify(products)
+
+# إضافة route لملف manifest.json
+@app.route('/manifest.json')
+def manifest():
+    """إرجاع ملف PWA manifest"""
+    return app.send_static_file('manifest.json')
+
+# إضافة route لـ Service Worker
+@app.route('/sw.js')
+def service_worker():
+    """إرجاع ملف Service Worker"""
+    response = app.send_static_file('sw.js')
+    response.headers['Content-Type'] = 'application/javascript'
+    response.headers['Service-Worker-Allowed'] = '/'
+    return response
+
 if __name__ == '__main__':
     init_database()
     app.run(debug=True, host='0.0.0.0', port=5000)
-
