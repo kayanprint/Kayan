@@ -36,7 +36,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       // تحميل CSS
       const cssFiles = [
-        'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap'
+        'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&amp;display=swap'
       ];
       
       cssFiles.forEach(function(href) {
