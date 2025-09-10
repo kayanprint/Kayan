@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' 
+      xmlns='http://www.w3.org/1999/xhtml' 
+      xmlns:b='http://www.google.com/2005/gml/b' 
+      xmlns:data='http://www.google.com/2005/gml/data' 
+      xmlns:expr='http://www.google.com/2005/gml/expr'>
 <head>
   <meta charset='utf-8'/>
   <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport'/>
@@ -596,13 +600,15 @@
                     <img class='product-image' expr:alt='data:post.title' expr:src='data:post.featuredImage'/>
                     <div class='product-info'>
                       <h3 class='product-title'><data:post.title/></h3>
-                      <div class='product-price' expr:data-price='data:post.body'>
+                      <div class='product-price'>
                         <script>
+                          //<![CDATA[
                           // استخراج السعر من المحتوى
                           var content = '<data:post.body/>';
                           var priceMatch = content.match(/(\d+)\s*جنيه/);
                           var price = priceMatch ? priceMatch[1] : '0';
                           document.write(price + ' جنيه');
+                          //]]>
                         </script>
                       </div>
                       <button class='add-to-cart' expr:onclick='&quot;addToCart(&apos;&quot; + data:post.title + &quot;&apos;, &apos;&quot; + data:post.featuredImage + &quot;&apos;, &apos;&quot; + data:post.url + &quot;&apos;)&quot;'>
