@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}فاتورة جديدة - مكتبة ومطبعة كيان{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="fas fa-file-invoice"></i>
+        إنشاء فاتورة جديدة
+    </h2>
+    <a href="{{ url_for('invoices') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-right"></i>
+        العودة للفواتير
+    </a>
+</div>
+
+<form id="invoiceForm" method="POST" action="{{ url_for('create_invoice') }}">
+    <div class="row">
+        <!-- معلومات الفاتورة -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">معلومات الفاتورة</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="customer_id" class="form-label">العميل</label>
+                        <select class="form-select" id="customer_id" name="customer_id">
+                            <option value="">عميل نقدي</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.CustomerID }}">{{ customer.CustomerName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="payment_method" class="form-label">طريقة الدفع *</label>
+                        <select class="form-select" id="payment_method" name="payment_method" required>
+                            <option value="كاش">كاش</option>
+                            <option value="فيزا">فيزا</option>
+                            <option value="آجل">آجل</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="discount" class="form-label">الخصم (ريال)</label>
+                        <input type="number" class="form-control" id="discount" name="discount" step="0.01" min="0" value="0" onchange="calculateTotal()">
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-2">
+                        <strong>الإجمالي الفرعي: <span id="subtotal">0.00</span> ريال</strong>
+                    </div>
+                    <div class="mb-2">
+                        <strong>الخصم: <span id="discount_display">0.00</span> ريال</strong>
+                    </div>
+                    <div class="mb-3">
+                        <h5 class="text-primary">الإجمالي النهائي: <span id="total">0.00</span> ريال</h5>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100" id="submitBtn" disabled>
+                        <i class="fas fa-save"></i>
+                        حفظ الفاتورة
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- إضافة المنتجات -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">إضافة المنتجات</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <label for="product_select" class="form-label">المنتج</label>
+                            <select class="form-select" id="product_select">
+                                <option value="">اختر المنتج</option>
+                                {% for product in products %}
+                                <option value="{{ product.ProductID }}" 
+                                        data-name="{{ product.ProductName }}" 
+                                        data-price="{{ product.SalePrice }}" 
+                                        data-stock="{{ product.StockQty }}">
+                                    {{ product.ProductName }} - {{ "%.2f"|format(product.SalePrice) }} ريال (متاح: {{ product.StockQty }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="quantity_input" class="form-label">الكمية</label>
+                            <input type="number" class="form-control" id="quantity_input" min="1" value="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="unit_price_input" class="form-label">سعر الوحدة</label>
+                            <input type="number" class="form-control" id="unit_price_input" step="0.01" min="0">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-primary w-100" onclick="addProduct()">
+                                <i class="fas fa-plus"></i>
+                                إضافة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- جدول المنتجات المضافة -->
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="invoice_items_table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>سعر الوحدة</th>
+                                    <th>الإجمالي</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoice_items_body">
+                                <tr id="no_items_row">
+                                    <td colspan="5" class="text-center text-muted">لم يتم إضافة أي منتجات بعد</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- حقل مخفي لتفاصيل الفاتورة -->
+    <input type="hidden" name="invoice_items" id="invoice_items_json" value="[]">
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let invoiceItems = [];
+
+// عند تغيير المنتج المحدد
+document.getElementById('product_select').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    if (selectedOption.value) {
+        document.getElementById('unit_price_input').value = selectedOption.dataset.price;
+        document.getElementById('quantity_input').max = selectedOption.dataset.stock;
+    } else {
+        document.getElementById('unit_price_input').value = '';
+        document.getElementById('quantity_input').max = '';
+    }
+});
+
+function addProduct() {
+    const productSelect = document.getElementById('product_select');
+    const quantityInput = document.getElementById('quantity_input');
+    const unitPriceInput = document.getElementById('unit_price_input');
+    
+    if (!productSelect.value || !quantityInput.value || !unitPriceInput.value) {
+        alert('يرجى ملء جميع الحقول');
+        return;
+    }
+    
+    const selectedOption = productSelect.options[productSelect.selectedIndex];
+    const productId = parseInt(productSelect.value);
+    const productName = selectedOption.dataset.name;
+    const quantity = parseInt(quantityInput.value);
+    const unitPrice = parseFloat(unitPriceInput.value);
+    const stock = parseInt(selectedOption.dataset.stock);
+    
+    // التحقق من توفر الكمية
+    if (quantity > stock) {
+        alert(`الكمية المطلوبة (${quantity}) أكبر من المتاح في المخزن (${stock})`);
+        return;
+    }
+    
+    // التحقق من عدم إضافة نفس المنتج مرتين
+    const existingItem = invoiceItems.find(item => item.product_id === productId);
+    if (existingItem) {
+        alert('هذا المنتج مضاف بالفعل. يمكنك تعديل الكمية من الجدول.');
+        return;
+    }
+    
+    const total = quantity * unitPrice;
+    
+    const item = {
+        product_id: productId,
+        product_name: productName,
+        quantity: quantity,
+        unit_price: unitPrice,
+        total: total
+    };
+    
+    invoiceItems.push(item);
+    updateInvoiceTable();
+    calculateTotal();
+    
+    // إعادة تعيين النموذج
+    productSelect.value = '';
+    quantityInput.value = '1';
+    unitPriceInput.value = '';
+}
+
+function removeProduct(index) {
+    invoiceItems.splice(index, 1);
+    updateInvoiceTable();
+    calculateTotal();
+}
+
+function updateInvoiceTable() {
+    const tbody = document.getElementById('invoice_items_body');
+    const noItemsRow = document.getElementById('no_items_row');
+    
+    if (invoiceItems.length === 0) {
+        tbody.innerHTML = '<tr id="no_items_row"><td colspan="5" class="text-center text-muted">لم يتم إضافة أي منتجات بعد</td></tr>';
+        document.getElementById('submitBtn').disabled = true;
+    } else {
+        let html = '';
+        invoiceItems.forEach((item, index) => {
+            html += `
+                <tr>
+                    <td>${item.product_name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.unit_price.toFixed(2)} ريال</td>
+                    <td>${item.total.toFixed(2)} ريال</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('submitBtn').disabled = false;
+    }
+    
+    // تحديث الحقل المخفي
+    document.getElementById('invoice_items_json').value = JSON.stringify(invoiceItems);
+}
+
+function calculateTotal() {
+    const subtotal = invoiceItems.reduce((sum, item) => sum + item.total, 0);
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+    const total = subtotal - discount;
+    
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+    document.getElementById('discount_display').textContent = discount.toFixed(2);
+    document.getElementById('total').textContent = total.toFixed(2);
+}
+
+// التحقق من صحة النموذج قبل الإرسال
+document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+    if (invoiceItems.length === 0) {
+        e.preventDefault();
+        alert('يجب إضافة منتج واحد على الأقل للفاتورة');
+    }
+});
+</script>
+{% endblock %}
+
