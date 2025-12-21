@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  
+  <!-- مكتبة ومطبعة كيان - قالب متجر إلكتروني متكامل -->
+  <meta name='description' content='مكتبة ومطبعة كيان لخدمات الطباعة المتكاملة - متجر إلكتروني متكامل'/>
+  <meta name='keywords' content='طباعة, مكتبة, كيان, خدمات طباعة, متجر إلكتروني'/>
+  <meta name='author' content='مكتبة ومطبعة كيان'/>
+  
+  <!-- إعدادات المتجر الأساسية -->
+  <script type='text/javascript'>
+    //<![CDATA[
+    // إعدادات المتجر
+    const STORE_CONFIG = {
+      name: 'مكتبة ومطبعة كيان لخدمات الطباعة المتكاملة',
+      phone: '01121499017',
+      instagram: 'kayanprint',
+      email: 'info@kayanprint.com',
+      address: 'القاهرة، مصر',
+      currency: 'جنيه مصري',
+      currencySymbol: 'ج.م',
+      freeShippingThreshold: 500,
+      taxRate: 0.14 // 14% ضريبة القيمة المضافة
+    };
+    
+    // متغيرات عامة
+    let cart = JSON.parse(localStorage.getItem('kayanCart')) || [];
+    let cartTotal = 0;
+    //]]>
+  </script>
+  
+  <style type='text/css'>
+    /*<![CDATA[*/
+    /* إعادة تعيين الأنماط الأساسية */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    /* الحاوي الرئيسي */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    
+    /* الهيدر */
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .header-top {
+      background: rgba(0,0,0,0.1);
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 2rem;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      outline: none;
+    }
+    
+    .search-btn {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .cart-icon {
+      position: relative;
+      background: rgba(255,255,255,0.2);
+      padding: 0.75rem;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .cart-icon:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff4757;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* التنقل */
+    .navigation {
+      background: rgba(0,0,0,0.1);
+      padding: 0.5rem 0;
+    }
+    
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+    
+    .nav-menu a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    /* المحتوى الرئيسي */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .product-info {
+      padding: 1rem;
+    }
+    
+    .product-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    
+    .product-price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+    
+    .add-to-cart-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .add-to-cart-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* الشريط الجانبي */
+    .sidebar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      height: fit-content;
+      position: sticky;
+      top: 120px;
+    }
+    
+    .sidebar h3 {
+      margin-bottom: 1rem;
+      color: #333;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 0.5rem;
+    }
+    
+    .category-list {
+      list-style: none;
+    }
+    
+    .category-list li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .category-list a {
+      color: #666;
+      text-decoration: none;
+      padding: 0.5rem;
+      display: block;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    .category-list a:hover {
+      background: #f8f9fa;
+      color: #667eea;
+    }
+    
+    /* الفوتر */
+    .footer {
+      background: #2c3e50;
+      color: white;
+      padding: 3rem 0 1rem;
+      margin-top: 3rem;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-section h4 {
+      margin-bottom: 1rem;
+      color: #ecf0f1;
+    }
+    
+    .footer-section p,
+    .footer-section a {
+      color: #bdc3c7;
+      text-decoration: none;
+      line-height: 1.8;
+    }
+    
+    .footer-section a:hover {
+      color: #667eea;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid #34495e;
+      color: #95a5a6;
+    }
+    
+    /* عربة التسوق العائمة */
+    .floating-cart {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      padding: 1rem;
+      z-index: 1001;
+      display: none;
+      max-width: 300px;
+    }
+    
+    .floating-cart.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+    
+    /* أماكن الإعلانات */
+    .ad-space {
+      margin: 2rem 0;
+      text-align: center;
+      background: #f8f9fa;
+      border: 2px dashed #ddd;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+    
+    .ad-header {
+      height: 90px;
+      margin-bottom: 1rem;
+    }
+    
+    .ad-sidebar {
+      height: 600px;
+      margin-bottom: 2rem;
+    }
+    
+    .ad-content {
+      height: 250px;
+      margin: 2rem 0;
+    }
+    
+    /* التجاوب مع الشاشات الصغيرة */
+    @media (max-width: 768px) {
+      .header-main {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .search-box {
+        margin: 0;
+        max-width: 100%;
+      }
+      
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .nav-menu {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      .floating-cart {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+      }
+      
+      .ad-header {
+        height: 50px;
+      }
+    }
+    /*]]>*/
+  </style>
+</head>
+
+<body>
+  <!-- الهيدر -->
+  <header class='header'>
+    <!-- شريط المعلومات العلوي -->
+    <div class='header-top'>
+      <div class='container'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+          <div>
+            📞 01121499017 | 📧 info@kayanprint.com
+          </div>
+          <div>
+            📍 القاهرة، مصر | 📱 @kayanprint
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- مكان إعلان الهيدر -->
+    <div class='ad-space ad-header'>
+      <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+      <!-- إعلان الهيدر -->
+      <ins class='adsbygoogle' data-ad-client='ca-pub-XXXXXXXXXX' data-ad-slot='XXXXXXXXXX' style='display:inline-block;width:728px;height:90px'></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    
+    <!-- الهيدر الرئيسي -->
+    <div class='header-main'>
+      <div class='container'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+          <!-- الشعار -->
+          <a class='logo' href='/' title='مكتبة ومطبعة كيان'>
+            🏪 مكتبة ومطبعة كيان
+          </a>
+          
+          <!-- مربع البحث -->
+          <div class='search-box'>
+            <input class='search-input' id='searchInput' placeholder='ابحث عن المنتجات...' type='text'/>
+            <button class='search-btn' onclick='searchProducts()'>🔍</button>
+          </div>
+          
+          <!-- أيقونة السلة -->
+          <div class='cart-icon' onclick='toggleCart()'>
+            🛒
+            <span class='cart-count' id='cartCount'>0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- قائمة التنقل -->
+    <nav class='navigation'>
+      <div class='container'>
+        <ul class='nav-menu'>
+          <li><a href='/'>الرئيسية</a></li>
+          <li><a href='/search/label/طباعة'>خدمات الطباعة</a></li>
+          <li><a href='/search/label/مكتبة'>المكتبة</a></li>
+          <li><a href='/search/label/قرطاسية'>القرطاسية</a></li>
+          <li><a href='/search/label/تصميم'>التصميم</a></li>
+          <li><a href='#contact'>اتصل بنا</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- المحتوى الرئيسي -->
+  <main class='container'>
+    <div class='main-content'>
+      <!-- منطقة المنتجات -->
+      <div class='products-section'>
+        <!-- إعلان بين المحتوى -->
+        <div class='ad-space ad-content'>
+          <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+          <!-- إعلان المحتوى -->
+          <ins class='adsbygoogle' data-ad-client='ca-pub-XXXXXXXXXX' data-ad-slot='XXXXXXXXXX' style='display:inline-block;width:728px;height:90px'></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        
+        <!-- شبكة المنتجات -->
+        <div class='products-grid' id='productsGrid'>
+          <!-- سيتم ملء المنتجات هنا بواسطة JavaScript -->
+        </div>
+        
+        <!-- إعلان بعد المنتجات -->
+        <div class='ad-space ad-content'>
+          <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+          <!-- إعلان بعد المنتجات -->
+          <ins class='adsbygoogle' data-ad-client='ca-pub-XXXXXXXXXX' data-ad-slot='XXXXXXXXXX' style='display:inline-block;width:300px;height:250px'></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+      
+      <!-- الشريط الجانبي -->
+      <aside class='sidebar'>
+        <!-- إعلان الشريط الجانبي -->
+        <div class='ad-space ad-sidebar'>
+          <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+          <!-- إعلان الشريط الجانبي -->
+          <ins class='adsbygoogle' data-ad-client='ca-pub-XXXXXXXXXX' data-ad-slot='XXXXXXXXXX' style='display:inline-block;width:300px;height:600px'></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        
+        <!-- التصنيفات -->
+        <div class='categories-widget'>
+          <h3>التصنيفات</h3>
+          <ul class='category-list'>
+            <li><a href='/search/label/طباعة'>خدمات الطباعة</a></li>
+            <li><a href='/search/label/مكتبة'>المكتبة</a></li>
+            <li><a href='/search/label/قرطاسية'>القرطاسية</a></li>
+            <li><a href='/search/label/تصميم'>التصميم</a></li>
+            <li><a href='/search/label/كتب'>الكتب</a></li>
+            <li><a href='/search/label/أدوات-مكتبية'>الأدوات المكتبية</a></li>
+          </ul>
+        </div>
+        
+        <!-- معلومات الاتصال -->
+        <div class='contact-widget'>
+          <h3>تواصل معنا</h3>
+          <p>📞 01121499017</p>
+          <p>📧 info@kayanprint.com</p>
+          <p>📱 @kayanprint</p>
+          <p>📍 القاهرة، مصر</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- عربة التسوق العائمة -->
+  <div class='floating-cart' id='floatingCart'>
+    <h4>🛒 سلة التسوق</h4>
+    <div id='cartItems'></div>
+    <div style='border-top: 1px solid #ddd; padding-top: 1rem; margin-top: 1rem;'>
+      <strong>المجموع: <span id='cartTotal'>0</span> ج.م</strong>
+    </div>
+    <button onclick='proceedToCheckout()' style='width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 5px; margin-top: 1rem; cursor: pointer;'>
+      إتمام الطلب
+    </button>
+    <button onclick='toggleCart()' style='width: 100%; padding: 0.5rem; background: #6c757d; color: white; border: none; border-radius: 5px; margin-top: 0.5rem; cursor: pointer;'>
+      إغلاق
+    </button>
+  </div>
+
+  <!-- الفوتر -->
+  <footer class='footer'>
+    <div class='container'>
+      <div class='footer-content'>
+        <!-- معلومات المتجر -->
+        <div class='footer-section'>
+          <h4>مكتبة ومطبعة كيان</h4>
+          <p>متجرك الموثوق لجميع خدمات الطباعة والمكتبة</p>
+          <p>📞 01121499017</p>
+          <p>📧 info@kayanprint.com</p>
+          <p>📍 القاهرة، مصر</p>
+        </div>
+        
+        <!-- روابط سريعة -->
+        <div class='footer-section'>
+          <h4>روابط سريعة</h4>
+          <p><a href='/'>الرئيسية</a></p>
+          <p><a href='/search/label/طباعة'>خدمات الطباعة</a></p>
+          <p><a href='/search/label/مكتبة'>المكتبة</a></p>
+          <p><a href='#contact'>اتصل بنا</a></p>
+        </div>
+        
+        <!-- خدماتنا -->
+        <div class='footer-section'>
+          <h4>خدماتنا</h4>
+          <p>طباعة المستندات</p>
+          <p>تصميم وطباعة البروشورات</p>
+          <p>الأدوات المكتبية</p>
+          <p>الكتب والمراجع</p>
+        </div>
+        
+        <!-- وسائل التواصل -->
+        <div class='footer-section'>
+          <h4>تابعنا</h4>
+          <p><a href='https://instagram.com/kayanprint'>📱 Instagram</a></p>
+          <p><a href='https://wa.me/201121499017'>💬 WhatsApp</a></p>
+          <p><a href='tel:01121499017'>📞 اتصل بنا</a></p>
+        </div>
+      </div>
+      
+      <div class='footer-bottom'>
+        <p>&#169; 2024 مكتبة ومطبعة كيان. جميع الحقوق محفوظة.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript الأساسي -->
+  <script type='text/javascript'>
+    //<![CDATA[
+    // تحديث عداد السلة
+    function updateCartCount() {
+      const cartCount = document.getElementById('cartCount');
+      cartCount.textContent = cart.length;
+    }
+    
+    // عرض/إخفاء السلة العائمة
+    function toggleCart() {
+      const floatingCart = document.getElementById('floatingCart');
+      floatingCart.classList.toggle('show');
+      if (floatingCart.classList.contains('show')) {
+        displayCartItems();
+      }
+    }
+    
+    // عرض عناصر السلة
+    function displayCartItems() {
+      const cartItems = document.getElementById('cartItems');
+      const cartTotal = document.getElementById('cartTotal');
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p>السلة فارغة</p>';
+        cartTotal.textContent = '0';
+        return;
+      }
+      
+      let html = '';
+      let total = 0;
+      
+      cart.forEach((item, index) => {
+        html += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+            <div>
+              <strong>${item.title}</strong><br>
+              <small>${item.price} ج.م</small>
+            </div>
+            <button onclick="removeFromCart(${index})" style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 0.25rem 0.5rem; cursor: pointer;">
+              حذف
+            </button>
+          </div>
+        `;
+        total += parseFloat(item.price);
+      });
+      
+      cartItems.innerHTML = html;
+      cartTotal.textContent = total.toFixed(2);
+    }
+    
+    // إضافة منتج للسلة
+    function addToCart(title, price, image, url) {
+      const item = {
+        title: title,
+        price: price,
+        image: image,
+        url: url,
+        id: Date.now()
+      };
+      
+      cart.push(item);
+      localStorage.setItem('kayanCart', JSON.stringify(cart));
+      updateCartCount();
+      
+      // إظهار رسالة تأكيد
+      alert('تم إضافة المنتج إلى السلة بنجاح!');
+    }
+    
+    // حذف منتج من السلة
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('kayanCart', JSON.stringify(cart));
+      updateCartCount();
+      displayCartItems();
+    }
+    
+    // البحث في المنتجات
+    function searchProducts() {
+      const searchTerm = document.getElementById('searchInput').value;
+      if (searchTerm.trim()) {
+        window.location.href = '/search?q=' + encodeURIComponent(searchTerm);
+      }
+    }
+    
+    // إتمام الطلب
+    function proceedToCheckout() {
+      if (cart.length === 0) {
+        alert('السلة فارغة! يرجى إضافة منتجات أولاً.');
+        return;
+      }
+      
+      // سيتم تطوير صفحة الدفع في المرحلة التالية
+      alert('سيتم توجيهك لصفحة إتمام الطلب...');
+      // window.location.href = '/checkout';
+    }
+    
+    // تحميل المنتجات من مقالات بلوجر
+    function loadProducts() {
+      // سيتم تطوير هذه الوظيفة في المرحلة التالية
+      console.log('تحميل المنتجات...');
+    }
+    
+    // تهيئة الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCount();
+      loadProducts();
+      
+      // إضافة مستمع للبحث عند الضغط على Enter
+      document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchProducts();
+        }
+      });
+    });
+    
+    // إغلاق السلة عند النقر خارجها
+    document.addEventListener('click', function(e) {
+      const floatingCart = document.getElementById('floatingCart');
+      const cartIcon = document.querySelector('.cart-icon');
+      
+      if (!floatingCart.contains(e.target) && !cartIcon.contains(e.target)) {
+        floatingCart.classList.remove('show');
+      }
+    });
+    //]]>
+  </script>
+  
+  <!-- إعلان عائم في الأسفل -->
+  <div style='position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; text-align: center; background: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);'>
+    <script async='async' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+    <!-- إعلان عائم -->
+    <ins class='adsbygoogle' data-ad-client='ca-pub-XXXXXXXXXX' data-ad-slot='XXXXXXXXXX' style='display:inline-block;width:320px;height:50px'></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width,initial-scale=1.0' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    
+    .header {
+      background: #667eea;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .product {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    
+    .product h3 {
+      color: #333;
+      margin: 15px 0 10px 0;
+    }
+    
+    .price {
+      color: #667eea;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .btn {
+      background: #667eea;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .btn:hover {
+      background: #5a6fd8;
+    }
+    
+    .footer {
+      background: #333;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    
+    .contact-info {
+      margin: 20px 0;
+    }
+    
+    .contact-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class='header'>
+    <a href='/' class='logo'>مكتبة ومطبعة كيان</a>
+    <p>خدمات الطباعة المتكاملة - 01121499017</p>
+  </header>
+
+  <div class='container'>
+    <b:section class='main' id='main' maxwidgets='1' showaddelement='no'>
+      <b:widget id='Blog1' locked='true' title='المنتجات' type='Blog' version='1' visible='true'>
+        <b:widget-settings>
+          <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+          <b:widget-setting name='showShareButtons'>false</b:widget-setting>
+        </b:widget-settings>
+        <b:includable id='main'>
+          <div class='products'>
+            <b:loop values='data:posts' var='post'>
+              <div class='product'>
+                <b:if cond='data:post.featuredImage'>
+                  <img expr:alt='data:post.title' expr:src='data:post.featuredImage'/>
+                </b:if>
+                <h3><data:post.title/></h3>
+                <div class='price'>السعر: يرجى الاستفسار</div>
+                <button class='btn' onclick='window.open("https://wa.me/201121499017?text=أريد الاستفسار عن: " + encodeURIComponent(this.parentElement.querySelector("h3").innerText))'>
+                  استفسار عبر واتساب
+                </button>
+              </div>
+            </b:loop>
+          </div>
+        </b:includable>
+      </b:widget>
+    </b:section>
+  </div>
+
+  <footer class='footer'>
+    <h3>مكتبة ومطبعة كيان</h3>
+    <div class='contact-info'>
+      <p>📞 الهاتف: 01121499017</p>
+      <p>📧 البريد: info@kayanprint.com</p>
+      <p>📍 العنوان: مصر - جميع المحافظات</p>
+      <p>📱 إنستجرام: @kayanprint</p>
+    </div>
+    <p>© 2024 مكتبة ومطبعة كيان. جميع الحقوق محفوظة.</p>
+  </footer>
+</body>
+</html>
+
